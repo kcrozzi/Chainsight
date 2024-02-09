@@ -1,0 +1,71 @@
+echo "# Chainsight" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/kcrozzi/Chainsight.git
+git push -u origin main
+
+
+https://colab.research.google.com/drive/1q6yx4Nc0aUEI6bn0g9eZHP24obJ2UiY3#scrollTo=tB1z_zYvcpAi
+ 
+import yfinance as yf
+import pandas as pd
+import openai
+ 
+# Front end interaface to recieve different information (for example, tickers, start date, end date.) (Also front end to choose what analysis we will perform or sentiment analysis or whatever.)
+ 
+# Set your OpenAI API key here
+openai.api_key = 'your_openai_api_key_here'  # Replace with your actual API key
+ 
+def download_historical_data(ticker, start_date, end_date):
+    """
+    Download historical data for a given ticker from Yahoo Finance.
+    """
+    data = yf.download(ticker, start=start_date, end=end_date)
+    return data
+ 
+def calculate_simple_moving_average(data, window=20):
+    """
+    Calculate the Simple Moving Average (SMA) for the 'Close' prices.
+    """
+    sma = data['Close'].rolling(window=window).mean()
+    return sma
+ 
+def ask_chatgpt(question, model="chat-3.5-turbo", max_tokens=100):
+    """
+    Send a question to ChatGPT and get a response using the OpenAI API.
+    """
+    response = openai.Completion.create(
+        model=model,
+        prompt=question,
+        max_tokens=max_tokens,
+        temperature=0.7
+    )
+    return response.choices[0].text.strip()
+ 
+# Example usage
+ticker = "AAPL"
+start_date = "2022-01-01"
+end_date = "2023-01-01"
+data = download_historical_data(ticker, start_date, end_date)
+sma = calculate_simple_moving_average(data)
+print(sma.tail()) # Print the last few values of the SMA
+ 
+# Example ChatGPT interaction
+question = "What can be inferred from the recent trends in AAPL's stock prices?"
+response = ask_chatgpt(question)
+print(response)
+
+
+
+
+## Install these first…
+
+
+pip install yfinance
+pip install pandas
+pip install openai
+ 
+ 
+
